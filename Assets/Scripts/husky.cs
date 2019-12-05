@@ -2,34 +2,74 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class husky : MonoBehaviour
+public class Husky : MonoBehaviour
 {
     Rigidbody2D rigidBody;
+    public bool grounded;
+    private Vector3 posCur;
+    private Quaternion rotCur;
     void Start()
     {
         rigidBody = gameObject.GetComponent<Rigidbody2D>();
 
     }
 
-    // Update is called once per frame
     void Update()
     {
         rigidBody.AddForce(new Vector2(3, 0));
-    }
 
-    void OnCollisionStay(Collision col)
-    {
-        if (col.collider.gameObject.tag == "Ground")
+        //declare a new Ray. It will start at this object's position and it's direction will be straight down from the object (in local space, that is)
+        //Ray ray = new Ray(transform.position, -transform.up);
+        //decalre a RaycastHit. This is neccessary so it can get "filled" with information when casting the ray below.
+        //RaycastHit hit;
+        //cast the ray. Note the "out hit" which makes the Raycast "fill" the hit variable with information. The maximum distance the ray will go is 1.5
+        //if (Physics.Raycast(ray, out hit) == true)
+
+
+        var hit = Physics2D.Raycast(transform.position - new Vector3(0, 10), -transform.up, 100f);
+
+        if (hit)
         {
-            rigidBody.constraints = RigidbodyConstraints2D.None;
+            //Debug.DrawLine(transform.position, hit.point, Color.red);
+            if (hit.collider.CompareTag("Ground"))
+            {
 
-            transform.rotation = Quaternion.FromToRotation(Vector3.up, col.contacts[0].normal);
+
+                //draw a Debug Line so we can see the ray in the scene view. Good to check if it actually does what we want. Make sure that it uses the same values as the actual Raycast. In this case, it starts at the same position, but only goes up to the point that we hit.
+                //store the roation and position as they would be aligned on the surface
+                rotCur = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+                posCur = new Vector3(transform.position.x, hit.point.y + 1, transform.position.z);
+
+                grounded = true;
+
+            }
         }
+        //if you raycast didn't hit anything, we are in the air and not grounded.
+        else
+        {
+            grounded = false;
+        }
+
+
+        if (grounded == true)
+        {
+            //smoothly rotate and move the objects until it's aligned to the surface. The "5" multiplier controls how fast the changes occur and could be made into a seperate exposed variable
+            transform.position = Vector3.Lerp(transform.position, posCur, Time.deltaTime * 5);
+            transform.rotation = Quaternion.Lerp(transform.rotation, rotCur, Time.deltaTime * 5);
+        }
+        else
+        {
+            ////if we are not grounded, make the object go straight down in world space (simulating gravity). the "1f" multiplier controls how fast we descend.
+            //transform.position = Vector3.Lerp(transform.position, transform.position - Vector3.up * 1f, Time.deltaTime * 5);
+
+            ////if we are not grounded, make the vehicle's rotation "even out". Not completey reaslistic, but easy to work with.
+            //rotCur.eulerAngles = Vector3.zero;
+            //transform.rotation = Quaternion.Lerp(transform.rotation, rotCur, Time.deltaTime);
+
+        }
+
+        //desenha raio
+        //Debug.DrawRay(transform.position, (-transform.up) * 10, Color.red);
     }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
-
-    }
 }
