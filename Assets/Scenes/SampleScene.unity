@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 46863311}
   - component: {fileID: 46863312}
   - component: {fileID: 46863313}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Flat Platform
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -639,13 +639,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1353097421}
-  m_LocalRotation: {x: -0, y: -0, z: -0.020498805, w: 0.99978995}
+  m_LocalRotation: {x: -0, y: -0, z: 0.24400868, w: 0.96977305}
   m_LocalPosition: {x: -39.63, y: 63.35, z: 0}
   m_LocalScale: {x: 0.506, y: 0.506, z: 0.506}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -2.3490002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 28.247002}
 --- !u!50 &1353097424
 Rigidbody2D:
   serializedVersion: 4
@@ -710,4 +710,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5d1fc10df110e442b5284a8b0595f97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grounded: 0
+  adjustRotationSpeed: 3
