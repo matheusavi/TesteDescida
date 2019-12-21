@@ -7,7 +7,6 @@ public class Husky : MonoBehaviour
     void Start()
     {
         rigidBody = gameObject.GetComponent<Rigidbody2D>();
-
     }
 
     void Update()
@@ -16,12 +15,17 @@ public class Husky : MonoBehaviour
 
         var hit = Physics2D.Raycast(transform.position, -transform.up, 20, LayerMask.GetMask("Ground"));
 
-        if (hit && hit.collider.CompareTag("Ground") && hit.distance > 1.5f)
+        if (hit && hit.distance > 1.5f)
         {
-            Debug.Log(hit.distance);
+            rigidBody.freezeRotation = true;
+
             Debug.DrawLine(transform.position, hit.point, Color.green);
-            var rotCur = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
-            transform.rotation = Quaternion.Lerp(transform.rotation, rotCur, Time.deltaTime * adjustRotationSpeed);
+            var rot = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+            transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * adjustRotationSpeed);
+        }
+        else
+        {
+            rigidBody.freezeRotation = false;
         }
     }
 }
