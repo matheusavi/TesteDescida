@@ -3,8 +3,6 @@
 public class Husky : MonoBehaviour
 {
     private Rigidbody2D rigidBody;
-    private bool rotate;
-    private Quaternion rotCur;
     public int adjustRotationSpeed;
     void Start()
     {
@@ -18,24 +16,11 @@ public class Husky : MonoBehaviour
 
         var hit = Physics2D.Raycast(transform.position, -transform.up, 20, LayerMask.GetMask("Ground"));
 
-        if (hit)
+        if (hit && hit.collider.CompareTag("Ground") && hit.distance > 1.5f)
         {
+            Debug.Log(hit.distance);
             Debug.DrawLine(transform.position, hit.point, Color.green);
-
-            if (hit.collider.CompareTag("Ground"))
-            {
-                rotCur = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
-                rotate = true;
-            }
-        }
-        else
-        {
-            rotate = false;
-        }
-
-        //Todo don't rotate while the gameobject is hitting the ground (just adjusts rotation while on air)
-        if (rotate)
-        {
+            var rotCur = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
             transform.rotation = Quaternion.Lerp(transform.rotation, rotCur, Time.deltaTime * adjustRotationSpeed);
         }
     }
