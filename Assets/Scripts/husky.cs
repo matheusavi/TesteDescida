@@ -11,13 +11,12 @@ public class Husky : MonoBehaviour
 
     void Update()
     {
-        rigidBody.AddForce(new Vector2(3, 0));
+        //rigidBody.AddForce(new Vector2(3, 0));
 
         var hit = Physics2D.Raycast(transform.position, -transform.up, 20, LayerMask.GetMask("Ground"));
 
         if (hit && hit.distance > 1.0f)
         {
-            Debug.Log(hit.distance);
             if (hit.distance > 1.5f)
                 rigidBody.freezeRotation = true;
             else
