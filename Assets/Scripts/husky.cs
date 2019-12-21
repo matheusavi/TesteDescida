@@ -15,9 +15,13 @@ public class Husky : MonoBehaviour
 
         var hit = Physics2D.Raycast(transform.position, -transform.up, 20, LayerMask.GetMask("Ground"));
 
-        if (hit && hit.distance > 1.5f)
+        if (hit && hit.distance > 1.0f)
         {
-            rigidBody.freezeRotation = true;
+            Debug.Log(hit.distance);
+            if (hit.distance > 1.5f)
+                rigidBody.freezeRotation = true;
+            else
+                rigidBody.freezeRotation = false;
 
             Debug.DrawLine(transform.position, hit.point, Color.green);
             var rot = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
