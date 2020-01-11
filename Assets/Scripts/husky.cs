@@ -35,18 +35,25 @@ public class Husky : MonoBehaviour
         {
             rotating = false;
         }
-#else
-        //Rotate with touch
+#endif
+
         if (Input.touchCount > 0)
         {
-            Rotate();
+            var theTouch = Input.GetTouch(0);
+            
+            if (theTouch.phase == TouchPhase.Stationary || theTouch.phase == TouchPhase.Moved)
+            {
+                Rotate();
+            }
+            else
+            {
+                rotating = false;
+            }
         }
         else
         {
             rotating = false;
         }
-#endif
-
     }
 
     private void AutomaticGroundAligment()
