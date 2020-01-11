@@ -1,12 +1,22 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Husky : MonoBehaviour
 {
-    private Rigidbody2D rigidBody;
     public int automaticRotationSpeed;
     public int manualRotationSpeed;
-    public Text Text;
+    public Text TextTouch;
+    public Text TextRotating;
+    public Text TextOnGround;
+    public Vector2 jumpHeight;
+    /// <summary>
+    /// Delay for rotating after jumping
+    /// </summary>
+    public float jumpDelay = .5f;
+
+    private float timeJumped;
+    private Rigidbody2D rigidBody;
     private bool rotating = false;
     private bool onGround = false;
 
@@ -19,31 +29,47 @@ public class Husky : MonoBehaviour
     {
         AutomaticGroundAligment();
 
-        RotateControl();
-    }
-
-    private void RotateControl()
-    {
+        RotatingControl();
 
 #if UNITY_EDITOR
-        //Rotate with mouse
-        if (Input.GetMouseButton(0))
-        {
-            Rotate();
-        }
-        else
-        {
-            rotating = false;
-        }
+        TextRotating.text = rotating.ToString();
+        TextOnGround.text = onGround.ToString();
 #endif
+    }
 
-        if (Input.touchCount > 0)
+    private void RotatingControl()
+    {
+
+
+        //#if UNITY_EDITOR 
+        //        //Control with mouse on editor
+        //        if (Input.GetMouseButton(0))
+        //        {
+        //            HandleRotation();
+        //            HandleJump();
+        //        }
+        //        else
+        //        {
+        //            rotating = false;
+        //        }
+        //#endif
+        //Uncomment the code above and comment the section below for testing without a phone
+
+        if (Input.touchCount > 0 && CanAct())
         {
             var theTouch = Input.GetTouch(0);
-            
+
+#if UNITY_EDITOR
+            TextTouch.text = theTouch.phase.ToString();
+#endif
+
             if (theTouch.phase == TouchPhase.Stationary || theTouch.phase == TouchPhase.Moved)
             {
-                Rotate();
+                HandleRotation();
+            }
+            else if (theTouch.phase == TouchPhase.Began)
+            {
+                HandleJump();
             }
             else
             {
@@ -54,6 +80,11 @@ public class Husky : MonoBehaviour
         {
             rotating = false;
         }
+    }
+
+    private bool CanAct()
+    {
+        return Time.time - timeJumped > jumpDelay;
     }
 
     private void AutomaticGroundAligment()
@@ -77,12 +108,22 @@ public class Husky : MonoBehaviour
         }
     }
 
-    private void Rotate()
+    private void HandleRotation()
     {
+
         if (!onGround)
         {
             rotating = true;
             transform.Rotate(new Vector3(0, 0, manualRotationSpeed));
+        }
+    }
+
+    private void HandleJump()
+    {
+        if (onGround)
+        {
+            rigidBody.AddForce(jumpHeight, ForceMode2D.Impulse);
+            timeJumped = Time.time;
         }
     }
 
