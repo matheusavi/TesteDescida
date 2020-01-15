@@ -17,12 +17,14 @@ public class Husky : MonoBehaviour
 
     private float timeJumped;
     private Rigidbody2D rigidBody;
+    private Vector2 initialPosition;
     private bool rotating = false;
     private bool onGround = false;
 
     void Start()
     {
         rigidBody = gameObject.GetComponent<Rigidbody2D>();
+        initialPosition = rigidBody.position;
     }
 
     void Update()
@@ -30,6 +32,13 @@ public class Husky : MonoBehaviour
         AutomaticGroundAligment();
 
         RotatingControl();
+
+        //Reset to it's initial position
+        if (rigidBody.position.y < -100)
+        {
+            rigidBody.position = initialPosition;
+            rigidBody.velocity = new Vector2(0, 0);
+        }
 
 #if UNITY_EDITOR
         TextRotating.text = rotating.ToString();
@@ -91,16 +100,36 @@ public class Husky : MonoBehaviour
     {
         var hit = Physics2D.Raycast(transform.position, -transform.up, 20, LayerMask.GetMask("Ground"));
 
-        if (!rotating && hit && hit.distance > 1.0f)
+        if (!rotating)
         {
-            if (hit.distance > 1.5f)
-                rigidBody.freezeRotation = true;
-            else
-                rigidBody.freezeRotation = false;
+            if (hit)
+            {
+                if (hit.distance > 1.0f)
+                {
+                    if (hit.distance > 1.5f)
+                        rigidBody.freezeRotation = true;
+                    else
+                        rigidBody.freezeRotation = false;
 
-            Debug.DrawLine(transform.position, hit.point, Color.green);
-            var rot = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
-            transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * automaticRotationSpeed);
+                    Debug.DrawLine(transform.position, hit.point, Color.green);
+                    var rot = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+                    transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * automaticRotationSpeed);
+                }
+            }
+            else
+            {
+                if(transform.rotation.eulerAngles.z > 45 && transform.rotation.eulerAngles.z < 315)
+                {
+                    if (transform.rotation.z < 175 && transform.rotation.z > 0)
+                    {
+                        transform.Rotate(new Vector3(0, 0, automaticRotationSpeed * -1));
+                    }
+                    else
+                    {
+                        transform.Rotate(new Vector3(0, 0, automaticRotationSpeed));
+                    }
+                }
+            }
         }
         else
         {

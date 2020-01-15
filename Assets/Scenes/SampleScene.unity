@@ -931,7 +931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5d1fc10df110e442b5284a8b0595f97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  automaticRotationSpeed: 2
+  automaticRotationSpeed: 1
   manualRotationSpeed: 3
   TextTouch: {fileID: 2036342410}
   TextRotating: {fileID: 1321758945}
