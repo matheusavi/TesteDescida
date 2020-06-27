@@ -36,14 +36,19 @@ public class Husky : MonoBehaviour
         //Reset to it's initial position
         if (rigidBody.position.y < -100)
         {
-            rigidBody.position = initialPosition;
-            rigidBody.velocity = new Vector2(0, 0);
+            Reset();
         }
 
 #if UNITY_EDITOR
         TextRotating.text = rotating.ToString();
         TextOnGround.text = onGround.ToString();
 #endif
+    }
+
+    public void Reset()
+    {
+        rigidBody.position = initialPosition;
+        rigidBody.velocity = new Vector2(0, 0);
     }
 
     private void RotatingControl()
